@@ -1,12 +1,4 @@
-/* CAN Loopback Example
- * This example sends a message once a second and receives that message
- *   no CAN bus is required.  This example will test the functionality 
- *   of the protocol controller, and connections to it.
- *   
- *   Written By: Cory J. Fowler - October 5th 2016
- */
-
-#include <mcp_can.h>
+#include "mcp_can.h"
 #include <SPI.h>
 
 // CAN TX Variables
@@ -23,20 +15,16 @@ unsigned char rxBuf[8];
 char msgString[128];
 
 // CAN0 INT and CS
-//#define CAN0_INT 2                              // Set INT to pin 2
-//MCP_CAN CAN0(15);                               // Set CS to pin 10
-#define CAN0_INT 2 // nano
-MCP_CAN CAN0(10); // nano
+#define CAN0_INT 2 // nano D2
+MCP_CAN CAN0(10); // nano D10
 
 
 void setup()
 {
-  Serial.begin(115200);  // CAN is running at 500,000BPS; 115,200BPS is SLOW, not FAST, thus 9600 is crippling.
-  
-  // Initialize MCP2515 running at 16MHz with a baudrate of 500kb/s and the masks and filters disabled.
-  //if(CAN0.begin(MCP_ANY, CAN_500KBPS, MCP_16MHZ) == CAN_OK)
-  //But as I understand the best setup is cnf1 = 02, cnf2 = 9a, cnf3 = 07
-  if(CAN0.begin(MCP_ANY, CAN_83K33BPS, MCP_16MHZ) == CAN_OK)
+  Serial.begin(115200);
+
+   //if (CAN0.begin(MCP_ANY, CAN_83K33BPS_AA, MCP_16MHZ) == CAN_OK) // angelovAlex's suggested values from this MBWorld thread: https://mbworld.org/forums/audio-electronics/580108-w211-can-b-hacking-2.html pg 2
+  if (CAN0.begin(MCP_ANY, CAN_83K33BPS, MCP_16MHZ) == CAN_OK) // my own values
     Serial.println("MCP2515 Initialized Successfully!");
   else
     Serial.println("Error Initializing MCP2515...");
@@ -56,9 +44,9 @@ void loop()
     CAN0.readMsgBuf(&rxId, &len, rxBuf);              // Read data: len = data length, buf = data byte(s)
     
     if((rxId & 0x80000000) == 0x80000000)             // Determine if ID is standard (11 bits) or extended (29 bits)
-      sprintf(msgString, "Extended ID: 0x%.8lX  DLC: %1d  Data:", (rxId & 0x1FFFFFFF), len);
+      sprintf(msgString, "EID: 0x%.8lX\tlen: %1d\tData:", (rxId & 0x1FFFFFFF), len);
     else
-      sprintf(msgString, "Standard ID: 0x%.3lX       DLC: %1d  Data:", rxId, len);
+      sprintf(msgString, "SID: 0x%.3lX\tlen: %1d\tData:", rxId, len);
   
     Serial.print(msgString);
   
