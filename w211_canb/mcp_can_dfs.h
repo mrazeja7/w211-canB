@@ -366,7 +366,7 @@
 #define MCP_16MHz_83k33BPS_CFG2 (0xBE)
 #define MCP_16MHz_83k33BPS_CFG3 (0x07)
 
-// MBWorld AlexAngelov: cnf1 = 02, cnf2 = 9a, cnf3 = 07
+// https://mbworld.org/forums/audio-electronics/580108-w211-can-b-hacking-2.html#post7038959
 #define MCP_16MHz_83k33BPS_AA_CFG1 (0x02)
 #define MCP_16MHz_83k33BPS_AA_CFG2 (0x9A)
 #define MCP_16MHz_83k33BPS_AA_CFG3 (0x07)
