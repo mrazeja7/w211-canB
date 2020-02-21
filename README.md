@@ -11,6 +11,4 @@ Chinese Arduino Nano knock-off (CH340G)
 
 MCP2515 ISP-CAN interface
 
-CH-06 serial-Bluetooth interface
-
-
+HC-06 serial-Bluetooth interface flashed with firmware from an RN-42 Bluetooth HID module
