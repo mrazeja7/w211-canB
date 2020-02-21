@@ -23,7 +23,7 @@ void setup()
 {
   Serial.begin(115200);
 
-   //if (CAN0.begin(MCP_ANY, CAN_83K33BPS_AA, MCP_16MHZ) == CAN_OK) // angelovAlex's suggested values from this MBWorld thread: https://mbworld.org/forums/audio-electronics/580108-w211-can-b-hacking-2.html pg 2
+   //if (CAN0.begin(MCP_ANY, CAN_83K33BPS_AA, MCP_16MHZ) == CAN_OK) // angelovAlex's suggested values from this MBWorld post: https://mbworld.org/forums/audio-electronics/580108-w211-can-b-hacking-2.html#post7038959
   if (CAN0.begin(MCP_ANY, CAN_83K33BPS, MCP_16MHZ) == CAN_OK) // my own values
     Serial.println("MCP2515 Initialized Successfully!");
   else
