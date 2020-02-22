@@ -7,7 +7,7 @@ Another goal is to operate the motorised door to the CD changer compartment in t
 
 Hardware used:
 
-Chinese Arduino Nano knock-off (CH340G)
+NodeMCU v3 (ESP8266, WiFi) ~~Chinese Arduino Nano knock-off (CH340G)~~
 
 MCP2515 ISP-CAN interface
 
