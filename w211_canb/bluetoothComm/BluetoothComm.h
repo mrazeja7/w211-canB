@@ -16,16 +16,23 @@ public:
   size_t write(const uint8_t* buffer, size_t size);
   int available();
   int read();
-  
-  void pausePlay();
-  void prevTrack();
-  void nextTrack();
-  void stop();
+
+  int releaseKeys();
+  int pausePlay();
+  int prevTrack();
+  int nextTrack();
+  int stop();
   void test();
 
   void setSerial(Stream *s);
   
 private:
+  int sendBtCommand(const byte *cmd, size_t len, bool release);
   SoftwareSerial *module;
   Stream *serial;
+  
+#ifdef DEBUG
+  #define DEBUG_LEN 64
+  char debugMsg[DEBUG_LEN];
+#endif  
 };
