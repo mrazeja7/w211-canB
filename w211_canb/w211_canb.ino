@@ -15,8 +15,10 @@ unsigned char rxBuf[8];
 char msgString[128];
 
 // CAN0 INT and CS
-#define CAN0_INT 2 // nano D2
-MCP_CAN CAN0(10); // nano D10
+//#define CAN0_INT 2 // nano D2
+//MCP_CAN CAN0(10); // nano D10
+#define CAN0_INT 15 // NodeMCU D8
+MCP_CAN CAN0(2); // NodeMCU D4
 
 
 void setup()

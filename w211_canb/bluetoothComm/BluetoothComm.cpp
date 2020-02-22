@@ -31,18 +31,69 @@ int BluetoothComm::read()
 void BluetoothComm::setSerial(Stream *s)
 {
   serial = s;
+#ifdef DEBUG
+  this->serial->println("Serial interface set");
+#endif
 }
 
 // presses the "previous track" media button for a short while, then releases
 void BluetoothComm::prevTrack()
 {  
-  module->write(PREV_TRACK, sizeof(PREV_TRACK));
+  size_t res = module->write(PREV_TRACK, sizeof(PREV_TRACK));
 #ifdef DEBUG
-  this->serial->println("\"prev\" command sent");
+  this->serial->println("\"prev\" command sent...");
 #endif
   delay(BLUETOOTH_KEY_DELAY);
   module->write(RELEASE_KEYS, sizeof(RELEASE_KEYS));
 #ifdef DEBUG
-  this->serial->println("keys released");
+  this->serial->println("keys released...");
+#endif
+}
+
+void BluetoothComm::nextTrack()
+{  
+  size_t res = module->write(NEXT_TRACK, sizeof(NEXT_TRACK));
+#ifdef DEBUG
+  this->serial->println("\"next\" command sent...");
+#endif
+  delay(BLUETOOTH_KEY_DELAY);
+  module->write(RELEASE_KEYS, sizeof(RELEASE_KEYS));
+#ifdef DEBUG
+  this->serial->println("keys released...");
+#endif
+}
+
+void BluetoothComm::pausePlay()
+{  
+  size_t res = module->write(PAUSE_PLAY, sizeof(PAUSE_PLAY));
+#ifdef DEBUG
+  this->serial->println("\"pause/play\" command sent...");
+#endif
+  delay(BLUETOOTH_KEY_DELAY);
+  module->write(RELEASE_KEYS, sizeof(RELEASE_KEYS));
+#ifdef DEBUG
+  this->serial->println("keys released...");
+#endif
+}
+
+void BluetoothComm::stop()
+{  
+  size_t res = module->write(STOP, sizeof(STOP));
+#ifdef DEBUG
+  this->serial->println("\"stop\" command sent...");
+#endif
+  delay(BLUETOOTH_KEY_DELAY);
+  module->write(RELEASE_KEYS, sizeof(RELEASE_KEYS));
+#ifdef DEBUG
+  this->serial->println("keys released...");
+#endif
+}
+
+void BluetoothComm::test()
+{  
+  size_t res = module->write(TEST, sizeof(TEST));
+#ifdef DEBUG
+  this->serial->print("command sent...");
+  this->serial->println(res);
 #endif
 }

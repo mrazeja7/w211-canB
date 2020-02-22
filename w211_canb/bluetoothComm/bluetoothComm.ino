@@ -26,6 +26,15 @@ void loop()
 
   if (millis() % 10000 == 0)
   {
-    bluetooth.prevTrack();
+    if (random(2))
+      bluetooth.nextTrack();
+    else
+      bluetooth.prevTrack();
+      
+    //bluetooth.nextTrack();
+    //bluetooth.prevTrack();
+    //bluetooth.pausePlay();
+    //bluetooth.stop();
+    //bluetooth.test();
   }
 }
