@@ -24,39 +24,46 @@ MCP_CAN CAN0(15); // NodeMCU D8
 void setup()
 {
   Serial.begin(115200);
-
-   //if (CAN0.begin(MCP_ANY, CAN_83K33BPS_AA, MCP_16MHZ) == CAN_OK) // angelovAlex's suggested values from this MBWorld post: https://mbworld.org/forums/audio-electronics/580108-w211-can-b-hacking-2.html#post7038959
-  if (CAN0.begin(MCP_ANY, CAN_83K33BPS, MCP_16MHZ) == CAN_OK) // my own values
+  
+    if (CAN0.begin(MCP_ANY, CAN_83K33BPS, MCP_16MHZ) == CAN_OK) // my own values
+  if (CAN0.begin(MCP_ANY, CAN_83K33BPS_AA, MCP_16MHZ) == CAN_OK) // angelovAlex's suggested values from this MBWorld post: https://mbworld.org/forums/audio-electronics/580108-w211-can-b-hacking-2.html#post7038959
     Serial.println("MCP2515 Initialized Successfully!");
   else
     Serial.println("Error Initializing MCP2515...");
   
   // Since we do not set NORMAL mode, we are in loopback mode by default.
-  //CAN0.setMode(MCP_NORMAL);
+  CAN0.setMode(MCP_NORMAL);
 
-  pinMode(CAN0_INT, INPUT);                           // Configuring pin for /INT input
-  
-  Serial.println("MCP2515 Library Loopback Example...");
+  pinMode(CAN0_INT, INPUT); // Configuring pin for /INT input
 }
 
 void loop()
 {
-  if(!digitalRead(CAN0_INT))                          // If CAN0_INT pin is low, read receive buffer
+  if(!digitalRead(CAN0_INT))
   {
-    CAN0.readMsgBuf(&rxId, &len, rxBuf);              // Read data: len = data length, buf = data byte(s)
+    memset(rxBuf, 0, 8);
+    int msgTime = millis();
+    CAN0.readMsgBuf(&rxId, &len, rxBuf);
+
+    //if (rxId != 0x2C && rxId != 0x1CA) // filter out everything except lower center panel and steering wheel buttons
+    //  return;
     
-    if((rxId & 0x80000000) == 0x80000000)             // Determine if ID is standard (11 bits) or extended (29 bits)
-      sprintf(msgString, "EID: 0x%.8lX\tlen: %1d\tData:", (rxId & 0x1FFFFFFF), len);
+    if((rxId & 0x80000000) == 0x80000000) // Determine if ID is standard (11 bits) or extended (29 bits)
+      sprintf(msgString, "%d:\tEID: 0x%.8lX\tlen: %1d\tData:", msgTime, (rxId & 0x1FFFFFFF), len);
     else
-      sprintf(msgString, "SID: 0x%.3lX\tlen: %1d\tData:", rxId, len);
+      sprintf(msgString, "%d:\tSID: 0x%.3lX\tlen: %1d\tData:", msgTime, rxId, len);
   
     Serial.print(msgString);
   
-    if((rxId & 0x40000000) == 0x40000000){            // Determine if message is a remote request frame.
+    if((rxId & 0x40000000) == 0x40000000) // remote request frame - will never be used in this project
+    {
       sprintf(msgString, " REMOTE REQUEST FRAME");
       Serial.print(msgString);
-    } else {
-      for(byte i = 0; i<len; i++){
+    } 
+    else 
+    {
+      for(byte i = 0; i<len; i++)
+      {
         sprintf(msgString, " 0x%.2X", rxBuf[i]);
         Serial.print(msgString);
       }
@@ -64,7 +71,8 @@ void loop()
         
     Serial.println();
   }
-  
+
+/*
   if(millis() - prevTX >= invlTX){                    // Send this at a one second interval. 
     prevTX = millis();
     data[7] = data[7]+1;
@@ -77,8 +85,8 @@ void loop()
       Serial.print("Error Sending Message...");
       Serial.println(sndStat);
     }
-
   }
+*/
 }
 
 /*********************************************************************************************************
