@@ -1,0 +1,5 @@
+the first column contains an arbitrary time tag (in milliseconds) of when the corresponding CAN message was received.
+
+At about 20 seconds, the "ESP disable/enable" button was pressed on the lower center console, but it seems like a message was not produced (ignition was off at this time)
+At about 50 seconds, the ignition was switched on - possible new message IDs?
+At 110 seconds, the front passenger window switch was operated (auto-up, not from the driver's door) - no message. Maybe only the driver's door window module sends messages?
