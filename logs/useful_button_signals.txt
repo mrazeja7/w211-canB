@@ -4,15 +4,28 @@ XXXXXX:	SID: 0x02C	len: 4	Data: 0x00 0x00 0x00 0x40 		no event
 
 357355:	SID: 0x02C	len: 4	Data: 0x00 0x20 0x00 0x40 		hazards are on
 -----------------------------------------|-----------
-419589:	SID: 0x02C	len: 4	Data: 0x00 0x00 0x80 0x40 		passenger seat heater: next level
+
+
+115422:	SID: 0x02C	len: 4	Data: 0x00 0x00 0x08 0x40		driver side (LHD) seat heater
+115492:	SID: 0x02C	len: 4	Data: 0x00 0x00 0x08 0x40 		stays for two messages
+----------------------------------------------|------
+
+
+419589:	SID: 0x02C	len: 4	Data: 0x00 0x00 0x80 0x40 		passenger side seat heater: next level
 419658:	SID: 0x02C	len: 4	Data: 0x00 0x00 0x80 0x40 		stays for two messages
 ----------------------------------------------|------
+
+
 466370:	SID: 0x02C	len: 4	Data: 0x40 0x00 0x00 0x40 		unlock
 466460:	SID: 0x02C	len: 4	Data: 0x40 0x00 0x00 0x40 		stays for two messages
 ------------------------------------|----------------
+
+
 509032:	SID: 0x02C	len: 4	Data: 0x80 0x00 0x00 0x40 		lock
 509062:	SID: 0x02C	len: 4	Data: 0x80 0x00 0x00 0x40 		stays for 2-4 messages
 ------------------------------------|----------------
+
+
 574465:	SID: 0x02C	len: 4	Data: 0x00 0x00 0x00 0x48 		open hidden compartment - this bit stays high for 30 seconds
 ----------------------------------------------------|
 
@@ -22,9 +35,9 @@ steering wheel buttons (only the +/- and up/down arrows work, the arrows send CA
 812871:	SID: 0x1CA	len: 4	Data: 0x03 0x01 0x00 0x00 		steering wheel up arrow
 617273:	SID: 0x1CA	len: 4	Data: 0x03 0x02 0x00 0x00 		steering wheel down arrow
 XXXXXX:	SID: 0x1CA	len: 4	Data: 0x03 0x03 0x00 0x00 		steering wheel both arrows pressed
-617322:	SID: 0x1CA	len: 4	Data: 0x03 0x00 0x00 0x00 		steering wheel no arrow button pressed - buttons released
 
-889073:	SID: 0x1CA	len: 4	Data: 0x02 0x10 0x00 0x00 		steering wheel + button
-889740:	SID: 0x1CA	len: 4	Data: 0x02 0x20 0x00 0x00 		steering wheel - button
-XXXXXX:	SID: 0x1CA	len: 4	Data: 0x02 0x30 0x00 0x00 		steering wheel both volume buttons pressed
-889940:	SID: 0x1CA	len: 4	Data: 0x02 0x00 0x00 0x00 		steering wheel no volume buttons pressed - buttons released
+889073:	SID: 0x1CA	len: 4	Data: 0x03 0x10 0x00 0x00 		steering wheel + button
+889740:	SID: 0x1CA	len: 4	Data: 0x03 0x20 0x00 0x00 		steering wheel - button
+XXXXXX:	SID: 0x1CA	len: 4	Data: 0x03 0x30 0x00 0x00 		steering wheel both volume buttons pressed
+
+889940:	SID: 0x1CA	len: 4	Data: 0x03 0x00 0x00 0x00 		steering wheel no buttons pressed - buttons released
