@@ -1,7 +1,8 @@
 /*
  * for bluetooth testing purposes only
  */
-
+#define DEBUG 1
+#define BT_TEST 1
 #include "BluetoothComm.h"
 
 BluetoothComm bluetooth;
@@ -14,10 +15,15 @@ void setup()
 #ifdef DEBUG
   bluetooth.setSerial(&Serial);
 #endif
+
+#ifdef BT_TEST
+  Serial.write("A random media key will be pressed every 10 seconds. You can also enter a string to send via keyboard keys: \n");
+#endif
 }
 
 void loop()
 {
+#ifdef BT_TEST
   while (bluetooth.available())
     Serial.write(bluetooth.read());
 
@@ -43,6 +49,7 @@ void loop()
         break;
       default: break;
     }
+#endif
     //bluetooth.test();
   }
 }
