@@ -1,5 +1,5 @@
 // enables the user to talk directly to the HC-06 module via the serial interface
-//#define BT_ATMODE 1
+#define BT_ATMODE 1
 
 // periodically sends random media key presses over bluetooth, as well as sending anything received on the serial interface
 #define BT_TEST 1
@@ -61,6 +61,7 @@ void initBluetooth()
   bluetooth.begin(115200);
   bluetooth.setSerial(&Serial);
 #ifdef BT_ATMODE
+  #undef BT_TEST
   Serial.print("enter commands to send to the bluetooth module: ");
 #endif
 #ifdef BT_TEST
