@@ -1,5 +1,5 @@
 // enables the user to talk directly to the HC-06 module via the serial interface
-#define BT_ATMODE 1
+//#define BT_ATMODE 1
 
 // periodically sends random media key presses over bluetooth, as well as sending anything received on the serial interface
 #define BT_TEST 1
@@ -91,29 +91,29 @@ int parseButtons(unsigned char *rxBuf, unsigned char len)
     // arrow buttons
     case 0x01:
       Serial.print(" - up arrow pressed");
-      lastPressed = rxBuf[0] << 1 | rxBuf[1];
+      lastPressed = rxBuf[0] << 4 | rxBuf[1];
       break;
     case 0x02:
       Serial.print(" - down arrow pressed");
-      lastPressed = rxBuf[0] << 1 | rxBuf[1];
+      lastPressed = rxBuf[0] << 4 | rxBuf[1];
       break;
     case 0x03:
       Serial.print(" - up+down arrows pressed");
-      lastPressed = rxBuf[0] << 1 | rxBuf[1];
+      lastPressed = rxBuf[0] << 4 | rxBuf[1];
       break;
 
     // volume buttons
     case 0x10:
       Serial.print(" - \"+\" button pressed");
-      lastPressed = rxBuf[0] << 1 | rxBuf[1];
+      lastPressed = rxBuf[0] << 4 | rxBuf[1];
       break;
     case 0x20:
       Serial.print(" - \"-\" button pressed");
-      lastPressed = rxBuf[0] << 1 | rxBuf[1];
+      lastPressed = rxBuf[0] << 4 | rxBuf[1];
       break;
     case 0x30:
       Serial.print(" - \"+\"+\"-\" buttons pressed");
-      lastPressed = rxBuf[0] << 1 | rxBuf[1];
+      lastPressed = rxBuf[0] << 4 | rxBuf[1];
       break;
       
     case 0x00: // buttons released
