@@ -2,7 +2,7 @@
 //#define BT_ATMODE 1
 
 // periodically sends random media key presses over bluetooth, as well as sending anything received on the serial interface
-#define BT_TEST 1
+//#define BT_TEST 1
 
 #define WHEEL_ARROWS_UP 301
 #define WHEEL_ARROWS_DOWN 302
@@ -97,37 +97,37 @@ int parseButtons(unsigned char *rxBuf, unsigned char len)
   {
     // arrow buttons
     case 0x01:
-      Serial.print(" - up arrow pressed");
+      Serial.println(" - up arrow pressed");
       lastPressed = WHEEL_ARROWS_UP;
       break;
     case 0x02:
-      Serial.print(" - down arrow pressed");
+      Serial.println(" - down arrow pressed");
       lastPressed = WHEEL_ARROWS_DOWN;
       break;
     case 0x03:
-      Serial.print(" - up+down arrows pressed");
+      Serial.println(" - up+down arrows pressed");
       lastPressed = WHEEL_ARROWS_UPDOWN;
       break;
 
     // volume buttons
     case 0x10:
-      Serial.print(" - \"+\" button pressed");
+      Serial.println(" - \"+\" button pressed");
       lastPressed = WHEEL_VOLUME_UP;
       break;
     case 0x20:
-      Serial.print(" - \"-\" button pressed");
+      Serial.println(" - \"-\" button pressed");
       lastPressed = WHEEL_VOLUME_DOWN;
       break;
     case 0x30:
-      Serial.print(" - \"+\"+\"-\" buttons pressed");
+      Serial.println(" - \"+\"+\"-\" buttons pressed");
       lastPressed = WHEEL_VOLUME_UPDOWN;
       break;
       
     case 0x00: // buttons released
       Serial.print(" - buttons released - the last pressed button was ");
-      Serial.print(lastPressed, HEX);
+      Serial.println(lastPressed, HEX);
 
-      // if the lastPressed variable equals zero here, a debouncing issue occurred -> don't send a command
+      // if the lastPressed variable equals zero here, a debouncing issue occurred -> don't send a command again
       if (lastPressed)
       {
         int tmp = lastPressed;
@@ -160,6 +160,28 @@ void sendMediaKey(int type)
   }
 }
 
+void sendRandomKey()
+{
+  int r = random(4);
+  switch(r)
+  {
+    case 0:
+      bluetooth.nextTrack();
+      break;
+    case 1:
+      bluetooth.prevTrack();
+      break;
+    case 2:
+      bluetooth.pausePlay();
+      break;
+    case 3:
+      bluetooth.stop();
+      break;
+    default: 
+      break;
+  }
+}
+
 void loop()
 {  
   if(!digitalRead(CAN0_INT))
@@ -178,7 +200,7 @@ void loop()
       sprintf(msgString, "%d:\tEID: 0x%.8lX\tlen: %1d\tData:", msgTime, (rxId & 0x1FFFFFFF), len);
     else
       sprintf(msgString, "%d:\tSID: 0x%.3lX\tlen: %1d\tData:", msgTime, rxId, len);
-  
+
     Serial.print(msgString);
 
     /* remote request frame - will never be used in this project    
@@ -201,6 +223,7 @@ void loop()
         int msg = parseButtons(rxBuf, len);
         if (msg)
           sendMediaKey(msg);
+        return;
     }
         
     Serial.println();
@@ -213,27 +236,10 @@ void loop()
   while (Serial.available() > 0)
     bluetooth.write(Serial.read());
 #endif
+
 #ifdef BT_TEST
   if (millis() % 5000 == 0)
-  {
-    int r = random(4);
-    switch(r)
-    {
-      case 0:
-        bluetooth.nextTrack();
-        break;
-      case 1:
-        bluetooth.prevTrack();
-        break;
-      case 2:
-        bluetooth.pausePlay();
-        break;
-      case 3:
-        bluetooth.stop();
-        break;
-      default: break;
-    }
-  }
+    sendRandomKey();  
 #endif
 
   if (millis() % 10000 == 0)
