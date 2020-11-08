@@ -1,6 +1,10 @@
-// MCP2515 library verbose mode
-#define DEBUG_MODE 1
+// enables the user to talk directly to the HC-06 module via the serial interface
+//#define BT_ATMODE 1
 
+// periodically sends random media key presses over bluetooth, as well as sending anything received on the serial interface
+#define BT_TEST 1
+
+#include "bluetoothComm.h"
 #include "mcp_can.h"
 #include <SPI.h>
 
@@ -11,23 +15,20 @@ long unsigned int rxId;
 unsigned char len;
 unsigned char rxBuf[8];
 
-// Serial Output String Buffer
+// Serial output String Buffer
 char msgString[128];
 
 // CAN0 INT and CS
 //#define CAN0_INT 2 // nano D2
 //MCP_CAN CAN0(10); // nano D10
+
 #define CAN0_INT 2 // NodeMCU D4 
 MCP_CAN CAN0(15); // NodeMCU D8
 
+BluetoothComm bluetooth;
 
-void setup()
+int initCan()
 {
-  Serial.begin(115200);
-  Serial.println("10 second grace period starting; start programming firmware now!");
-  delay(10000);
-  Serial.println("Grace period over.");
-  
   int canStatus = CAN_FAIL;
 
   // my own values
@@ -38,17 +39,44 @@ void setup()
   {
     Serial.print("MCP2515 init error: ");
     Serial.println(canStatus, HEX);
+    return canStatus;
   } 
    
   if ( (canStatus = CAN0.setMode(MCP_NORMAL)) != CAN_OK)
   {
     Serial.print("MCP2515 setMode error: ");
     Serial.println(canStatus, HEX);
+    return canStatus;
   }
     
   Serial.println("MCP2515 init ok");
 
   pinMode(CAN0_INT, INPUT); // configure pin for interrupt input
+  return 0;
+}
+
+void initBluetooth()
+{
+  bluetooth.init(BLUETOOTH_RX, BLUETOOTH_TX);
+  bluetooth.begin(115200);
+  bluetooth.setSerial(&Serial);
+#ifdef BT_ATMODE
+  Serial.print("enter commands to send to the bluetooth module: ");
+#endif
+#ifdef BT_TEST
+  Serial.print("A random media key will be pressed every 10 seconds. You can also enter a string to send via keyboard keys: \n");
+#endif
+}
+
+void setup()
+{
+  Serial.begin(115200);
+  Serial.println("10 second grace period starting; start programming firmware now!");
+  delay(10500);
+  Serial.println("Grace period over.");
+  
+  initCan();
+  initBluetooth(); 
 }
 
 unsigned long nonUseful = 0;
@@ -149,6 +177,36 @@ void loop()
         
     Serial.println();
   }
+
+#if defined BT_TEST || defined BT_ATMODE
+  while (bluetooth.available())
+    Serial.write(bluetooth.read());
+
+  while (Serial.available() > 0)
+    bluetooth.write(Serial.read());
+#endif
+#ifdef BT_TEST
+  if (millis() % 5000 == 0)
+  {
+    int r = random(4);
+    switch(r)
+    {
+      case 0:
+        bluetooth.nextTrack();
+        break;
+      case 1:
+        bluetooth.prevTrack();
+        break;
+      case 2:
+        bluetooth.pausePlay();
+        break;
+      case 3:
+        bluetooth.stop();
+        break;
+      default: break;
+    }
+  }
+#endif
 
   if (millis() % 10000 == 0)
   {
