@@ -22,6 +22,7 @@ public:
   int prevTrack();
   int nextTrack();
   int stop();
+  int mute();
   void test();
 
   void setSerial(Stream *s);

@@ -4,6 +4,13 @@
 // periodically sends random media key presses over bluetooth, as well as sending anything received on the serial interface
 #define BT_TEST 1
 
+#define WHEEL_ARROWS_UP 301
+#define WHEEL_ARROWS_DOWN 302
+#define WHEEL_ARROWS_UPDOWN 303
+#define WHEEL_VOLUME_UP 310
+#define WHEEL_VOLUME_DOWN 320
+#define WHEEL_VOLUME_UPDOWN 330
+
 #include "bluetoothComm.h"
 #include "mcp_can.h"
 #include <SPI.h>
@@ -91,29 +98,29 @@ int parseButtons(unsigned char *rxBuf, unsigned char len)
     // arrow buttons
     case 0x01:
       Serial.print(" - up arrow pressed");
-      lastPressed = rxBuf[0] << 4 | rxBuf[1];
+      lastPressed = WHEEL_ARROWS_UP;
       break;
     case 0x02:
       Serial.print(" - down arrow pressed");
-      lastPressed = rxBuf[0] << 4 | rxBuf[1];
+      lastPressed = WHEEL_ARROWS_DOWN;
       break;
     case 0x03:
       Serial.print(" - up+down arrows pressed");
-      lastPressed = rxBuf[0] << 4 | rxBuf[1];
+      lastPressed = WHEEL_ARROWS_UPDOWN;
       break;
 
     // volume buttons
     case 0x10:
       Serial.print(" - \"+\" button pressed");
-      lastPressed = rxBuf[0] << 4 | rxBuf[1];
+      lastPressed = WHEEL_VOLUME_UP;
       break;
     case 0x20:
       Serial.print(" - \"-\" button pressed");
-      lastPressed = rxBuf[0] << 4 | rxBuf[1];
+      lastPressed = WHEEL_VOLUME_DOWN;
       break;
     case 0x30:
       Serial.print(" - \"+\"+\"-\" buttons pressed");
-      lastPressed = rxBuf[0] << 4 | rxBuf[1];
+      lastPressed = WHEEL_VOLUME_UPDOWN;
       break;
       
     case 0x00: // buttons released
@@ -129,6 +136,28 @@ int parseButtons(unsigned char *rxBuf, unsigned char len)
       }
   }
   return 0;
+}
+
+void sendMediaKey(int type)
+{
+  switch(type)
+  {
+    case WHEEL_ARROWS_UP:
+      bluetooth.prevTrack();
+      break;
+    case WHEEL_ARROWS_DOWN:
+      bluetooth.nextTrack();
+      break;
+    case WHEEL_ARROWS_UPDOWN:
+      bluetooth.pausePlay();
+      break;
+    case WHEEL_VOLUME_UP:
+    case WHEEL_VOLUME_DOWN:
+    case WHEEL_VOLUME_UPDOWN:
+    default:
+    // do nothing
+      break;      
+  }
 }
 
 void loop()
@@ -171,9 +200,7 @@ void loop()
     {
         int msg = parseButtons(rxBuf, len);
         if (msg)
-        {
-          // handle bluetooth communication here
-        }
+          sendMediaKey(msg);
     }
         
     Serial.println();
